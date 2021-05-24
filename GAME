@@ -1,0 +1,35 @@
+import pygame
+
+WIDTH, HEIGHT = 1300, 731   #dimensiones
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))   #pantalla
+pygame.display.set_caption("Boss battle")   #name
+
+WHITE = (255,255,255)   #fondo
+
+FPS = 60  #gamer
+
+BOSS_ARENA = pygame.image.load("/Universidad/Programación/GAME/Main Directory/Arena.png")
+KNIGHT_SPRITE = pygame.image.load("/Universidad/Programación/GAME/ASSETS/Hero Knight/Sprites/HeroKnight/Idle/HeroKnight_Idle_0.png")
+KNIGHT = pygame.transform.scale(KNIGHT_SPRITE, (250, 160))
+
+def win_draw():   #def window_draw, aqui se mete todo lo que la pantalla debe actualizar. OJO CON EL ORDEN. pygame.display.upadte() debe ir siempre al final
+    WINDOW.fill(WHITE)
+    WINDOW.blit(BOSS_ARENA, (0,0))
+    WINDOW.blit(KNIGHT, (30, 460))
+    pygame.display.update()
+    
+
+def main_loop():   #este loop hace que el juego funcione y termine
+    clock = pygame.time.Clock()
+    run = True
+    while run:
+        clock.tick(FPS)           
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+        win_draw()
+    pygame.quit()
+
+
+main_loop()
+win_draw()
