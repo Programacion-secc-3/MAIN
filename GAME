@@ -11,8 +11,8 @@ WHITE = (255,255,255)
 
 FPS = 60
 
-ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo
-CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta
+ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo, este path solo sirve para mi PC pq es donde yo guardo las fotos,
+CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta, lo mismo con este
 
 def win_draw(player):   #funcion que actualiza la pantallas. el orden es importante. 
     WINDOW.fill(WHITE)
