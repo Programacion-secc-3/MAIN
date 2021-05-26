@@ -1,33 +1,70 @@
 import pygame
+#estas weas son datos para usar dps
+WIDTH, HEIGHT = 900, 420
+WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Boss battle")
+CHILD_HEIGHT, CHILD_WIDTH = 51, 48
+VEL = 5
 
-WIDTH, HEIGHT = 1300, 731   #dimensiones
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))   #pantalla
-pygame.display.set_caption("Boss battle")   #name
 
-WHITE = (255,255,255)   #fondo
+WHITE = (255,255,255)
 
-FPS = 60  #gamer
+FPS = 60
 
-BOSS_ARENA = pygame.image.load("/Universidad/Programación/GAME/Main Directory/Arena.png")
-KNIGHT_SPRITE = pygame.image.load("/Universidad/Programación/GAME/ASSETS/Hero Knight/Sprites/HeroKnight/Idle/HeroKnight_Idle_0.png")
-KNIGHT = pygame.transform.scale(KNIGHT_SPRITE, (250, 160))
+ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo
+CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta
 
-def win_draw():   #def window_draw, aqui se mete todo lo que la pantalla debe actualizar. OJO CON EL ORDEN. pygame.display.upadte() debe ir siempre al final
+def win_draw(player):   #funcion que actualiza la pantallas. el orden es importante. 
     WINDOW.fill(WHITE)
-    WINDOW.blit(BOSS_ARENA, (0,0))
-    WINDOW.blit(KNIGHT, (30, 460))
-    pygame.display.update()
+    WINDOW.blit(ARENA_1, (0,0))
+    WINDOW.blit(CHILD, (player.x, player.y))
+    pygame.display.update()  #esto siempre al último
     
 
-def main_loop():   #este loop hace que el juego funcione y termine
-    clock = pygame.time.Clock()
-    run = True
+def main_loop():  #este loop hace que el juego funcione
+    player = pygame.Rect(10, 345, CHILD_HEIGHT, CHILD_WIDTH)  #hitbox para mas tarde
+
+    clock = pygame.time.Clock()  #no se que es esto, pero el tutorial decia que iba xd
+    isJump = False   #weas para el salto
+    jumpCount = 10
+    run = True   #NO BORRAR
+
     while run:
+        #ni idea, pero esto ahce que funcione
         clock.tick(FPS)           
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-        win_draw()
+        
+        #movimiento
+        keys_pressed = pygame.key.get_pressed()
+        if keys_pressed[pygame.K_a] and player.x > VEL: #LEFT
+            player.x -= VEL
+            
+        if keys_pressed[pygame.K_d] and WIDTH - CHILD_WIDTH - VEL > player.x: #RIGHT
+            player.x += VEL
+        if keys_pressed[pygame.K_s] and HEIGHT - CHILD_HEIGHT - VEL > player.y:
+            player.y += VEL
+        
+        
+        #NO TOCAAAAAR AAAAAH CTM QUE ME DEMORE EN AHCER ESTA WEA, SALTO
+        if not (isJump):
+            if keys_pressed[pygame.K_w]:
+                isJump = True
+        else: 
+            if jumpCount >= -10:
+                neg = 1
+                if 0 > jumpCount:
+                    neg = -1
+                player.y -= (jumpCount **2) * 0.5 * neg
+                jumpCount -= 1
+            else:
+                jumpCount = 8
+                isJump = False
+                
+
+            
+        win_draw(player)
     pygame.quit()
 
 
