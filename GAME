@@ -1,27 +1,38 @@
 import pygame
 #estas weas son datos para usar dps
-WIDTH, HEIGHT = 900, 420
+
+#info de la ventana
+WIDTH, HEIGHT = 1000, 420
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Boss battle")
+
 CHILD_HEIGHT, CHILD_WIDTH = 51, 48
-VEL = 5
+VEL = 8
+#STANDING = True
 
+IDLE_ANIMATION = [pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png"), pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_2.png")]
 
-WHITE = (255,255,255)
+WHITE = (255,255,255) #(R,G,B)
 
-FPS = 60
+FPS = 25
 
-ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo, este path solo sirve para mi PC pq es donde yo guardo las fotos,
-CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta, lo mismo con este
+ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo
+CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta
+
+#class player():
+ #   def CHILD():
+
+        
 
 def win_draw(player):   #funcion que actualiza la pantallas. el orden es importante. 
     WINDOW.fill(WHITE)
     WINDOW.blit(ARENA_1, (0,0))
     WINDOW.blit(CHILD, (player.x, player.y))
     pygame.display.update()  #esto siempre al último
-    
+
 
 def main_loop():  #este loop hace que el juego funcione
+    
     player = pygame.Rect(10, 345, CHILD_HEIGHT, CHILD_WIDTH)  #hitbox para mas tarde
 
     clock = pygame.time.Clock()  #no se que es esto, pero el tutorial decia que iba xd
@@ -30,12 +41,12 @@ def main_loop():  #este loop hace que el juego funcione
     run = True   #NO BORRAR
 
     while run:
-        #ni idea, pero esto ahce que funcione
+        #ni idea, pero esto hace que funcione
         clock.tick(FPS)           
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-        
+                run = False            
+
         #movimiento
         keys_pressed = pygame.key.get_pressed()
         if keys_pressed[pygame.K_a] and player.x > VEL: #LEFT
@@ -43,13 +54,10 @@ def main_loop():  #este loop hace que el juego funcione
             
         if keys_pressed[pygame.K_d] and WIDTH - CHILD_WIDTH - VEL > player.x: #RIGHT
             player.x += VEL
-        if keys_pressed[pygame.K_s] and HEIGHT - CHILD_HEIGHT - VEL > player.y:
-            player.y += VEL
-        
-        
+                
         #NO TOCAAAAAR AAAAAH CTM QUE ME DEMORE EN AHCER ESTA WEA, SALTO
         if not (isJump):
-            if keys_pressed[pygame.K_w]:
+            if keys_pressed[pygame.K_w] and HEIGHT - CHILD_HEIGHT - VEL > player.y:
                 isJump = True
         else: 
             if jumpCount >= -10:
@@ -59,14 +67,15 @@ def main_loop():  #este loop hace que el juego funcione
                 player.y -= (jumpCount **2) * 0.5 * neg
                 jumpCount -= 1
             else:
-                jumpCount = 8
+                player.y = 345
+                jumpCount = 10
                 isJump = False
-                
-
-            
+                            
         win_draw(player)
     pygame.quit()
 
 
 main_loop()
 win_draw()
+
+# https://coderslegacy.com/python/pygame-rpg-game-tutorial/
