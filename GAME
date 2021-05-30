@@ -1,81 +1,69 @@
 import pygame
-#estas weas son datos para usar dps
+from pygame.locals import *
+import sys
+import random
+from tkinter import filedialog
+from tkinter  import *
 
-#info de la ventana
+#inicia pygame
+pygame.init()
+
+#Variables para usar dps
+vec = pygame.math.Vector2
 WIDTH, HEIGHT = 1000, 420
-WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Boss battle")
+ACC, FRIC = 0.3, -0.10
+FPS = 60
+FPS_CLOCK = pygame.time.Clock()
+COUNT = 0
+BOSS1_ST = pygame.mixer.Sound("/Universidad/Programación/GAME/Proyecto JUEGO/Soundtrack/BOSS3_ST.mp3")
 
-CHILD_HEIGHT, CHILD_WIDTH = 51, 48
-VEL = 8
-#STANDING = True
+displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Project Andromeda")
 
-IDLE_ANIMATION = [pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png"), pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_2.png")]
+#clases del juego
+class Background(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.bgimage = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Background1.jpg")
+        self.bgY = -1
+        self.bgX = 0
+    def render(self):
+        displaysurface.blit(self.bgimage, (self.bgX, self.bgY))
 
-WHITE = (255,255,255) #(R,G,B)
+class Ground(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Rectangulo.png")
+        self.gdY = 390
+        self.gdX = 0
+        self.rect = self.image.get_rect()
 
-FPS = 25
-
-ARENA_1 = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/Background/Space1.jpg") #foto fondo
-CHILD = pygame.image.load("/Universidad/Programación/GAME/ASSETS/CHILD/IDLE_1.png") #el astronauta
-
-#class player():
- #   def CHILD():
-
+    def render(self):
+        displaysurface.blit(self.image, (self.gdX, self.gdY))
         
-
-def win_draw(player):   #funcion que actualiza la pantallas. el orden es importante. 
-    WINDOW.fill(WHITE)
-    WINDOW.blit(ARENA_1, (0,0))
-    WINDOW.blit(CHILD, (player.x, player.y))
-    pygame.display.update()  #esto siempre al último
-
-
-def main_loop():  #este loop hace que el juego funcione
     
-    player = pygame.Rect(10, 345, CHILD_HEIGHT, CHILD_WIDTH)  #hitbox para mas tarde
-
-    clock = pygame.time.Clock()  #no se que es esto, pero el tutorial decia que iba xd
-    isJump = False   #weas para el salto
-    jumpCount = 10
-    run = True   #NO BORRAR
-
-    while run:
-        #ni idea, pero esto hace que funcione
-        clock.tick(FPS)           
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False            
-
-        #movimiento
-        keys_pressed = pygame.key.get_pressed()
-        if keys_pressed[pygame.K_a] and player.x > VEL: #LEFT
-            player.x -= VEL
-            
-        if keys_pressed[pygame.K_d] and WIDTH - CHILD_WIDTH - VEL > player.x: #RIGHT
-            player.x += VEL
-                
-        #NO TOCAAAAAR AAAAAH CTM QUE ME DEMORE EN AHCER ESTA WEA, SALTO
-        if not (isJump):
-            if keys_pressed[pygame.K_w] and HEIGHT - CHILD_HEIGHT - VEL > player.y:
-                isJump = True
-        else: 
-            if jumpCount >= -10:
-                neg = 1
-                if 0 > jumpCount:
-                    neg = -1
-                player.y -= (jumpCount **2) * 0.5 * neg
-                jumpCount -= 1
-            else:
-                player.y = 345
-                jumpCount = 10
-                isJump = False
-                            
-        win_draw(player)
-    pygame.quit()
 
 
-main_loop()
-win_draw()
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
 
-# https://coderslegacy.com/python/pygame-rpg-game-tutorial/
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+
+background = Background()
+ground = Ground()
+
+while True:
+    background.render()
+    ground.render()
+
+    pygame.display.update()
+    FPS_CLOCK.tick(FPS)
+    pygame.mixer.Sound.play(BOSS1_ST)
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
