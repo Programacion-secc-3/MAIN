@@ -1,4 +1,6 @@
+
 import pygame
+from pygame.key import get_pressed
 from pygame.locals import *
 import sys
 import random
@@ -30,6 +32,8 @@ class Background(pygame.sprite.Sprite):
     def render(self):
         displaysurface.blit(self.bgimage, (self.bgX, self.bgY))
 
+background = Background()
+
 class Ground(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -41,29 +45,96 @@ class Ground(pygame.sprite.Sprite):
     def render(self):
         displaysurface.blit(self.image, (self.gdX, self.gdY))
         
-    
+ground = Ground()
+ground_group = pygame.sprite.Group()
+ground_group.add(ground)
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.image = pygame.image.load("/Universidad/Programación/GAME/Proyecto JUEGO/PC's & NPC's/Player character/IDLE_1.png")
+        self.rect = self.image.get_rect()
+        #posicion y dirección
+        self.vx = 0
+        self.pos = vec((340, 340))
+        self.vel = vec(0, 0)
+        self.acc = vec(0, 0.3) #0.5 es un valor gravitacional
+        self.direction = "RIGHT"
+        self.jumping = False
+    def move(self):
+        if abs(self.vel.x) > 0.3:
+            self.running = True
+        else:
+            self.running = False
+        pressed_keys = pygame.key.get_pressed()
+        if pressed_keys[K_a]:
+            self.acc.x = -ACC
+        if pressed_keys[K_d]:
+            self.acc.x = ACC
+        #FISICA JASJDAJDSAD ME RIO PORQUE NO ENTIENDO
+        self.acc.x += self.vel.x * FRIC
+        self.vel += self.acc
+        self.pos += self.vel + 0.5 * self.acc #ah?
+
+        if self.pos.x > WIDTH:
+            self.pos.x = WIDTH
+        if 0 > self.pos.x:
+            self.pos.x = 0
+        self.rect.midbottom = self.pos
+        
+    def update(self):
+        pass 
+    def attack(self):
+        pass 
+    def jump(self):
+        self.rect.x += 1
+
+        hits = pygame.sprite.spritecollide(self, ground_group, False)
+
+        self.rect.x -= 1
+
+        if hits and not self.jumping:
+            self.jumping = True
+            self.vel.y = -12
+        
+    def gravity_check(self):
+        hits = pygame.sprite.spritecollide(player, ground_group, False)   #spritecollide(quien, contra que, ¿se muere o no?)
+        if self.vel.y > 0:
+            if hits:
+                lowest = hits[0]
+                if self.pos.y < lowest.rect.bottom:
+                    self.pos.y = lowest.rect.top + 1
+                    self.vel.y = 0
+                    self.jumping = False
+
+player = Player()
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-background = Background()
-ground = Ground()
+
+
+
 
 while True:
+    player.gravity_check()
     background.render()
     ground.render()
+    player.move()
+    displaysurface.blit(player.image, player.rect)
 
     pygame.display.update()
     FPS_CLOCK.tick(FPS)
-    pygame.mixer.Sound.play(BOSS1_ST)
+    #pygame.mixer.Sound.play(BOSS1_ST)
+    
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_w:
+            player.jump()
 
